@@ -12,6 +12,14 @@ nltk.download("stopwords")
 
 
 def preprocess(file : str):
+    """Preprocesses the given dataset.
+
+    Parameters:
+        - file: (str), path to the dataset file
+
+    Returns:
+        - tuple (Preprocessed reviews, respective labels)    
+    """
     dataset = pd.read_csv(file, delimiter="\t", quoting=3)
 
     ps = PorterStemmer()
