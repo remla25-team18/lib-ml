@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lib-ml"
-version = "0.0.1"
+dynamic = ["version"]
 description = "Library for ML preprocessing"
 authors = [
     { name = "Group 18" }
@@ -24,6 +24,3 @@ dependencies = [
     "tqdm==4.67.1",
     "tzdata==2025.2"
 ]
-
-[tool.setuptools.packages.find]
-where = ["."]
