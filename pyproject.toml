@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lib-ml"
-dynamic = ["version"]
+version = "0.0.1"
 description = "Library for ML preprocessing"
 authors = [
     { name = "Group 18" }
