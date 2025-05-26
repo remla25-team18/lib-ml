@@ -5,10 +5,11 @@ import pandas as pd
 # Natural Language imports
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
 # Download stopwords from nltk
 nltk.download("stopwords")
+nltk.download('wordnet')
 
 def preprocess_text(reviews):
     """
@@ -23,7 +24,7 @@ def preprocess_text(reviews):
     if isinstance(reviews, pd.DataFrame):
         reviews = reviews["Review"].tolist()
     
-    ps = PorterStemmer()
+    lemmatizer = WordNetLemmatizer()
     all_stopwords = stopwords.words("english")
     if "not" in all_stopwords:
         all_stopwords.remove("not")
@@ -32,7 +33,20 @@ def preprocess_text(reviews):
     for review in reviews:
         review = re.sub("[^a-zA-Z]", " ", review)
         review = review.lower().split()
-        review = [ps.stem(word) for word in review if word not in set(all_stopwords)]
-        corpus.append(" ".join(review))
+        review = [lemmatizer.lemmatize(word) for word in review if word not in set(all_stopwords)]
+        cleaned_review = " ".join(review)
+        if cleaned_review.strip():
+            corpus.append(cleaned_review)
     
     return corpus
+
+if __name__ == "__main__":
+    # Example usage
+    sample_reviews = [
+        "This is a great restaurant!",
+        "I did not like the food.",
+        "Don't do it!!!!",
+        "The service was excellent, but the food was terrible."
+    ]
+    processed_reviews = preprocess_text(sample_reviews)
+    print(processed_reviews)
