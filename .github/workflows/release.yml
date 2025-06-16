@@ -8,6 +8,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.latest_stable.outputs.tag }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -29,7 +31,7 @@ jobs:
 
       - name: Fetch all branches
         run: git fetch --all --tags
-        
+
       - name: Run GitVersion
         id: gitversion
         uses: gittools/actions/gitversion/execute@v3.2.1
@@ -57,18 +59,12 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Bump main to next pre-release version
+      - name: Get latest stable release tag
+        id: latest_stable
         run: |
-          git fetch origin main
-          git checkout main
-
-          NEXT_PATCH=$(( ${{ steps.gitversion.outputs.patch }} + 1 ))
-          NEXT_VERSION="v${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}.${NEXT_PATCH}-pre"
-
-          echo "$NEXT_VERSION" > VERSION
-          git add VERSION
-          git commit -m "Bump version to $NEXT_VERSION"
-          git push origin main
+          git fetch --tags
+          TAG=$(git tag --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
       
       # - name: Update tag
       #   id: updated_tag
