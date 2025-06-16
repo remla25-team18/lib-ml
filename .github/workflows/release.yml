@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*.*.*"
+    branches:
+      - main
 
 jobs:
   release:
@@ -15,31 +15,69 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
 
-
       - name: Set git remote env variable
         if: ${{ !startsWith(steps.tagmsg.outputs.message, 'Bump version') }}
         run: |
           REMOTE_REPO="https://${GITHUB_ACTOR}:${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
           echo "remote_repo=$REMOTE_REPO" >> $GITHUB_ENV
 
-      - name: Extract version from tag
-        id: get_tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-        
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.2.1
+        with:
+          versionSpec: '5.x'
 
-      - name: Update tag
-        id: updated_tag
+      - name: Run GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v3.2.1
+        with:
+          useConfigFile: false
+
+      # Mostly for debugging purposes, can be removed later
+      - name: Output GitVersion info
         run: |
-          git fetch --all
-          git checkout main
-          
-          IFS='.' read -r MAJOR MINOR PATCH <<< "${{steps.get_tag.outputs.VERSION}}"
-          NEW_PATCH=$((PATCH + 1))
-          echo "v$MAJOR.$MINOR.${NEW_PATCH}-pre" > VERSION
-          
+          echo "GitVersion Output:"
+          echo "Full SemVer: ${{ steps.gitversion.outputs.SemVer }}"
+          echo "Major: ${{ steps.gitversion.outputs.Major }}"
+          echo "Minor: ${{ steps.gitversion.outputs.Minor }}"
+          echo "Patch: ${{ steps.gitversion.outputs.Patch }}"
+          echo "Pre-release tag: ${{ steps.gitversion.outputs.Pre }}"
+
+      
+      # - name: Extract version from tag
+      #   id: get_tag
+      #   run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        
+      - name: Set up Git config
+        run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          
+
+      - name: Bump main to next pre-release version
+        run: |
+          git fetch origin main
+          git checkout main
+
+          NEXT_PATCH=$(( ${{ steps.gitversion.outputs.patch }} + 1 ))
+          NEXT_VERSION="v${{ steps.gitversion.outputs.major }}.${{ steps.gitversion.outputs.minor }}.${NEXT_PATCH}-pre"
+
+          echo "$NEXT_VERSION" > VERSION
           git add VERSION
-          git commit -m "Bump version"
-          git push "${{ env.remote_repo }}" HEAD:main
+          git commit -m "Bump version to $NEXT_VERSION"
+          git push origin main
+      
+      # - name: Update tag
+      #   id: updated_tag
+      #   run: |
+      #     git fetch --all
+      #     git checkout main
+          
+      #     IFS='.' read -r MAJOR MINOR PATCH <<< "${{steps.get_tag.outputs.VERSION}}"
+      #     NEW_PATCH=$((PATCH + 1))
+      #     echo "v$MAJOR.$MINOR.${NEW_PATCH}-pre" > VERSION
+          
+      #     git config user.name "github-actions"
+      #     git config user.email "github-actions@github.com"
+          
+      #     git add VERSION
+      #     git commit -m "Bump version"
+      #     git push "${{ env.remote_repo }}" HEAD:main
