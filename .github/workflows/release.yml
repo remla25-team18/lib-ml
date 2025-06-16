@@ -52,7 +52,7 @@ jobs:
           echo "Patch: ${{ steps.gitversion.outputs.Patch }}"
           echo "Pre-release tag: ${{ steps.gitversion.outputs.Pre }}"
 
-      
+      # DEBUG comment to test release
       # - name: Extract version from tag
       #   id: get_tag
       #   run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
