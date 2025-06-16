@@ -32,6 +32,9 @@ jobs:
       - name: Fetch all branches
         run: git fetch --all --tags
 
+      - name: DEBUG - print all tags
+        run: git tag --sort=-v:refname
+
       - name: Run GitVersion
         id: gitversion
         uses: gittools/actions/gitversion/execute@v3.2.1
