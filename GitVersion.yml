@@ -1,3 +1,4 @@
+next-version: 0.0.10
 mode: Mainline
 commit-message-incrementing: Enabled
 branches:
