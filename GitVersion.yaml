@@ -1,6 +1,12 @@
 mode: Mainline
 commit-message-incrementing: Enabled
 tag-prefix: 'v'
+ignore:
+  sha: []
+  before: ''
+  tags:
+    - '0.1.*'
+    - 'a*'
 branches:
   main:
     regex: ^main$
