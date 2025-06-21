@@ -40,7 +40,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v3.2.1
         with:
           useConfigFile: true
-          configFilePath: GitVersion.yaml
+          configFilePath: GitVersion.yml
 
       # Logging GitVersion outputs
       - name: Check GitVersion Output File
