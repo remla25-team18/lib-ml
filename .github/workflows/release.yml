@@ -35,6 +35,9 @@ jobs:
       - name: DEBUG - print all tags
         run: git tag --sort=-v:refname
 
+      - name: Print GitVersion config
+        run: cat GitVersion.yml
+
       - name: Run GitVersion
         id: gitversion
         uses: gittools/actions/gitversion/execute@v3.2.1

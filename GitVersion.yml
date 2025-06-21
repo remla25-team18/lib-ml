@@ -4,7 +4,6 @@ tag-prefix: 'v'
 ignore:
   tags:
     - '0.1.*'
-    - 'a*'
 branches:
   main:
     regex: ^main$
