@@ -2,7 +2,7 @@
 # This file is used by GitVersion to determine the versioning strategy for the project.
 # It specifies how versions are incremented based on branch names and commit messages.
 # For more information, see https://gitversion.net/docs/reference/configuration
-next-version: 0.2.8-pre
+next-version: 0.2.9-pre
 mode: ContinuousDelivery
 commit-message-incrementing: Enabled
 branches:
