@@ -29,8 +29,8 @@ jobs:
         with:
           versionSpec: '5.x'
 
-      - name: Fetch all branches
-        run: git fetch --all --tags
+      - name: Fetch all history for all tags and branches
+        run: git fetch --prune --unshallow --tags
 
       - name: DEBUG - print all tags
         run: git tag --sort=-v:refname
@@ -40,7 +40,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v3.2.1
         with:
           useConfigFile: true
-          configFilePath: GitVersion.yaml
+          configFilePath: ./GitVersion.yaml
 
       # Mostly for debugging purposes, can be removed later
       - name: Output GitVersion info
