@@ -55,7 +55,10 @@ jobs:
           echo "Major: ${{ steps.gitversion.outputs.Major }}"
           echo "Minor: ${{ steps.gitversion.outputs.Minor }}"
           echo "Patch: ${{ steps.gitversion.outputs.Patch }}"
-          echo "Pre-release tag: ${{ steps.gitversion.outputs.Pre }}"
+          echo "Pre-release tag: ${{ steps.gitversion.outputs.PreReleaseTag }}"
+
+      - name: Write version to VERSION file
+        run: echo "${{ steps.gitversion.outputs.semVer }}" > VERSION
 
       # DEBUG comment to test release
       # - name: Extract version from tag
