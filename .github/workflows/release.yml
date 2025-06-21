@@ -27,13 +27,10 @@ jobs:
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v3.2.1
         with:
-          versionSpec: '5.12.0'
+          versionSpec: "5.12.0"
 
       - name: Fetch all history for all tags and branches
         run: git fetch --prune --tags
-
-      - name: Print GitVersion config
-        run: cat GitVersion.yml
 
       - name: Run GitVersion
         id: gitversion
@@ -60,23 +57,16 @@ jobs:
       - name: Write version to VERSION file
         run: echo "${{ steps.gitversion.outputs.semVer }}" > VERSION
 
-      - name: Commit and push VERSION file
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add VERSION
-          git commit -m "Update VERSION file [skip ci]" || echo "No changes to commit"
-          git push "${{ env.remote_repo }}" HEAD:main
-      
-      # DEBUG comment to test release
-      # - name: Extract version from tag
-      #   id: get_tag
-      #   run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-        
       - name: Set up Git config
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
+
+      - name: Commit and push VERSION file
+        run: |
+          git add VERSION
+          git commit -m "Update VERSION file [skip ci]" || echo "No changes to commit"
+          git push "${{ env.remote_repo }}" HEAD:main
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -87,28 +77,3 @@ jobs:
           target_commitish: ${{ github.sha }}
           generate_release_notes: true
           prerelease: ${{ contains(steps.gitversion.outputs.semVer, '-') }}
-      
-      - name: Get and set latest stable tag
-        id: latest_stable
-        run: |
-          git fetch --tags
-          TAG=$(git tag --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1)
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> VERSION
-      
-      # - name: Update tag
-      #   id: updated_tag
-      #   run: |
-      #     git fetch --all
-      #     git checkout main
-          
-      #     IFS='.' read -r MAJOR MINOR PATCH <<< "${{steps.get_tag.outputs.VERSION}}"
-      #     NEW_PATCH=$((PATCH + 1))
-      #     echo "v$MAJOR.$MINOR.${NEW_PATCH}-pre" > VERSION
-          
-      #     git config user.name "github-actions"
-      #     git config user.email "github-actions@github.com"
-          
-      #     git add VERSION
-      #     git commit -m "Bump version"
-      #     git push "${{ env.remote_repo }}" HEAD:main
