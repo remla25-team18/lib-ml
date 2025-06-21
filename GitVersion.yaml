@@ -1,5 +1,8 @@
+# GitVersion configuration file
+
 mode: Mainline
 commit-message-incrementing: Enabled
+tag-prefix: 'v'
 branches:
   main:
     regex: ^main$
