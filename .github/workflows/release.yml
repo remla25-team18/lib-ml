@@ -40,6 +40,12 @@ jobs:
         uses: gittools/actions/gitversion/execute@v3.2.1
         with:
           useConfigFile: true
+          configFilePath: GitVersion.yaml
+
+      # Logging GitVersion outputs
+      - name: Check GitVersion Output File
+        if: failure()
+        run: cat GitVersionOutput.json || echo "No GitVersionOutput.json found"
 
       # Mostly for debugging purposes, can be removed later
       - name: Output GitVersion info
