@@ -7,6 +7,7 @@ on:
 
 jobs:
   release:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.latest_stable.outputs.tag }}
