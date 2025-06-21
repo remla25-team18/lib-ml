@@ -1,5 +1,5 @@
 next-version: 0.2.0
-mode: Mainline
+mode: ContinuousDelivery
 commit-message-incrementing: Enabled
 branches:
   main:
