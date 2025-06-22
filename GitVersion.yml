@@ -15,4 +15,3 @@ branches:
     prevent-increment-of-merged-branch-version: true
     tag: 'pre'
     pre-release-weight: 1
-    pre-release-tag: 'pre.{ContinuousDeploymentNumber}'
