@@ -10,7 +10,7 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.latest_stable.outputs.tag }}
+      tag: ${{ steps.gitversion.outputs.SemVer }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
